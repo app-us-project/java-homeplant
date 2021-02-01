@@ -51,7 +51,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: app-us-rds.conomzfuhb5p.ap-northeast-2.rds.amazonaws.com/appus
+    url: jdbc:mysql://app-us-rds.conomzfuhb5p.ap-northeast-2.rds.amazonaws.com:3306/appus
     username: homeplant
     password: appus
 
