@@ -51,9 +51,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: app-us-rds.conomzfuhb5p.ap-northeast-2.rds.amazonaws.com
-    username: root
-    password: appus1234
+    url: app-us-rds.conomzfuhb5p.ap-northeast-2.rds.amazonaws.com/appus
+    username: homeplant
+    password: appus
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
