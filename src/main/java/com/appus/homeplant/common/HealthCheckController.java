@@ -1,4 +1,4 @@
-package common.controller;
+package com.appus.homeplant.common;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HealthCheckController {
 
-    @GetMapping("/health_check")
+    @GetMapping("/health")
     public String healthCheck() {
-
-        return "lived";
+        return "health";
     }
 }
