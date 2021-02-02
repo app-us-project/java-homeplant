@@ -14,6 +14,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
+
     private final FooRepository fooRepository;
     private final HttpSession httpSession;
 
