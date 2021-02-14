@@ -3,6 +3,7 @@ package com.appus.homeplant.security;
 import com.appus.homeplant.core.JwtToken;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +17,14 @@ import java.util.Date;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    @Value("${app.jwt-secret")
+    @Value("${app.jwt-secret}")
     private String jwtSecret;   //암호화 키
 
-    @Value("${app.jwt-expiration-in-ms")
+    @Value("${app.jwt-expiration-in-ms}")
     private int jwtExpirationInMs;  //만료일 상수
 
     private static final String HOME_PLANT="HomePlantToken";
