@@ -1,11 +1,14 @@
 package com.appus.homeplant.users.core;
 
 import com.appus.homeplant.commons.audit.BaseEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Authorities extends BaseEntity {
 

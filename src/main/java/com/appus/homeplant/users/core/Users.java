@@ -1,15 +1,20 @@
 package com.appus.homeplant.users.core;
 
 import com.appus.homeplant.commons.audit.BaseEntity;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Users extends BaseEntity implements UserDetails {
 
@@ -34,7 +39,16 @@ public class Users extends BaseEntity implements UserDetails {
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             orphanRemoval = true
     )
-    private List<UserAuthorities> authorities;
+    private List<UserAuthorities> authorities = Collections.emptyList();
+
+    @Builder
+    public Users(String email, String password, String phoneNumber, UserStatus userStatus, List<UserAuthorities> authorities) {
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.userStatus = userStatus;
+        this.authorities = authorities;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -69,6 +83,13 @@ public class Users extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return userStatus.equals(UserStatus.ENABLED);
+    }
+
+    public void addAuthorities(List<UserAuthorities> userAuthorities) {
+        this.authorities.addAll(userAuthorities);
+        for (UserAuthorities userAuthority : userAuthorities) {
+            userAuthority.registerUsers(this);
+        }
     }
 
     public enum UserStatus {
