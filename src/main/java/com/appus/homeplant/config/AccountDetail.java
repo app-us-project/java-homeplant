@@ -1,6 +1,5 @@
 package com.appus.homeplant.config;
 
-import com.appus.homeplant.core.Foo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

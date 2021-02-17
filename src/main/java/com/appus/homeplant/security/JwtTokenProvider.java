@@ -25,7 +25,7 @@ public class JwtTokenProvider {
     private String jwtSecret;   //암호화 키
 
     @Value("${app.jwt-expiration-in-ms}")
-    private int jwtExpirationInMs;  //만료일 상수
+    private Long jwtExpirationInMs;  //만료일 상수
 
     private static final String HOME_PLANT="HomePlantToken";
     private static final String ASIA_SEOUL="Asia/Seoul";
