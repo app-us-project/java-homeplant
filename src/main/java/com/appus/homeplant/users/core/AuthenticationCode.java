@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Id;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,7 +25,7 @@ public class AuthenticationCode {
     public AuthenticationCode(String phoneNumber,
                               String code) {
         this.phoneNumber = phoneNumber;
-        this.code = code;
+        this.code = randomCode();
         this.requestCount = 0;
         this.authenticationCheck = false;
     }
@@ -33,14 +34,14 @@ public class AuthenticationCode {
         return phoneNumber;
     }
 
-    public void refresh(String code) {
+    public void refresh() {
         if (isExpiredDate()) {
             this.requestCount = 0;
         }
 
         increaseRequestCount();
         this.createdDate = LocalDateTime.now();
-        this.code = code;
+        this.code = randomCode();
     }
 
     public void inspect(String code) {
@@ -70,5 +71,10 @@ public class AuthenticationCode {
             throw new RuntimeException("요청 제한 횟수를 초과하였습니다.");
         }
         this.requestCount++;
+    }
+
+    private String randomCode() {
+        ThreadLocalRandom current = ThreadLocalRandom.current();
+        return Integer.toString(current.nextInt(100_000, 1_000_000));
     }
 }

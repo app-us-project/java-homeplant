@@ -4,29 +4,33 @@ import com.appus.homeplant.users.core.AuthenticationCode;
 import com.appus.homeplant.users.repository.AuthenticationCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import software.amazon.awssdk.services.sns.SnsAsyncClient;
 import software.amazon.awssdk.services.sns.model.PublishResponse;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
 
 @RequiredArgsConstructor
 @Component
-class AuthenticationCodeSendService {
+public class AuthenticationCodeSendService {
 
+    private final UsersSearchService usersSearchService;
     private final AuthenticationCodeRepository authenticationCodeRepository;
-    private final SnsAsyncClient snsAsyncClient;
+    private final SMSMessageSender smsMessageSender;
 
     private static final String SUBJECT = "homeplant";
     private static final String MESSAGE_FORMAT = "인증번호 안내드립니다. \n인증번호 : %s";
 
     public void sendVerificationNumber(String phoneNumber) {
-        AuthenticationCode publishedCode = publishNewAuthenticationCode(phoneNumber);
+        if (usersSearchService.existsUsersByPhone(phoneNumber)) {
+            throw new IllegalArgumentException("이미 가입된 휴대폰 번호입니다.");
+        }
 
-        Future<PublishResponse> publishedResponse = publish(
-                publishedCode.getPhoneNumber(),
-                publishedCode.getCode());
+        AuthenticationCode createdCode = createAuthenticationCode(phoneNumber);
+        Future<PublishResponse> publishedResponse = smsMessageSender.publish(
+                SUBJECT,
+                createdCode.getPhoneNumber(),
+                String.format(MESSAGE_FORMAT, createdCode.getCode())
+        );
 
         try {
             publishedResponse.get();
@@ -34,7 +38,7 @@ class AuthenticationCodeSendService {
             e.printStackTrace();
         }
 
-        authenticationCodeRepository.save(publishedCode);
+        authenticationCodeRepository.save(createdCode);
     }
 
     public void authenticateCode(String phoneNumber, String code) {
@@ -54,39 +58,14 @@ class AuthenticationCodeSendService {
         }
     }
 
-    private AuthenticationCode publishNewAuthenticationCode(String phoneNumber) {
-        String randomCode = randomCode();
+    private AuthenticationCode createAuthenticationCode(String phoneNumber) {
         AuthenticationCode publishedCode = authenticationCodeRepository.findById(phoneNumber)
                 .orElseGet(() -> AuthenticationCode.builder()
                         .phoneNumber(phoneNumber)
                         .build()
                 );
 
-        publishedCode.refresh(randomCode);
+        publishedCode.refresh();
         return publishedCode;
-    }
-
-    private String randomCode() {
-        ThreadLocalRandom current = ThreadLocalRandom.current();
-        return Integer.toString(current.nextInt(100_000, 1_000_000));
-    }
-
-    private Future<PublishResponse> publish(String phoneNumber, String code) {
-        String countryCodePhoneNumber = convertCountryCode(phoneNumber);
-
-        return snsAsyncClient.publish(
-                publishBuilder -> publishBuilder
-                        .subject(SUBJECT)
-                        .phoneNumber(countryCodePhoneNumber)
-                        .message(getMessage(code))
-        );
-    }
-
-    private String convertCountryCode(String phoneNumber) {
-        return "+82" + phoneNumber.substring(1);
-    }
-
-    private String getMessage(String code) {
-        return String.format(MESSAGE_FORMAT, code);
     }
 }

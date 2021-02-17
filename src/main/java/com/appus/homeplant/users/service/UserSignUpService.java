@@ -5,8 +5,8 @@ import com.appus.homeplant.users.repository.AuthoritiesRepository;
 import com.appus.homeplant.users.repository.TermsRepository;
 import com.appus.homeplant.users.repository.UserTermsRepository;
 import com.appus.homeplant.users.repository.UsersRepository;
-import com.appus.homeplant.users.service.dto.TermsDTO;
-import com.appus.homeplant.users.service.dto.UserDTO;
+import com.appus.homeplant.users.service.dto.TermsAgreementDto;
+import com.appus.homeplant.users.service.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class UserSignUpService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void signUpUsers(UserDTO userDTO) {
+    public void signUpUsers(UserDto userDTO) {
         authenticationCodeSendService.authenticationCheck(userDTO.getPhoneNumber());
 
         if (!userDTO.isEqualsTwoPassword()) {
@@ -48,7 +48,7 @@ public class UserSignUpService {
         userTermsRepository.saveAll(contractUserTerms);
     }
 
-    private Users createUsers(UserDTO userDTO) {
+    private Users createUsers(UserDto userDTO) {
         Users createdUsers = Users.builder()
                 .email(userDTO.getEmail())
                 .password(passwordEncoder.encode(userDTO.getPasswordCheck()))
@@ -68,11 +68,11 @@ public class UserSignUpService {
         return createdUsers;
     }
 
-    private List<UserTerms> contractUserTerms(Users users, Set<TermsDTO> termsDTOs) {
+    private List<UserTerms> contractUserTerms(Users users, Set<TermsAgreementDto> termsAgreementDtos) {
         List<Terms> terms = termsRepository.findAllByTermsType(Terms.TermsType.SIGN_UP);
 
-        Map<Long, TermsDTO> userTermsMap = termsDTOs.stream()
-                .collect(toMap(TermsDTO::getTermsId, x -> x));
+        Map<Long, TermsAgreementDto> userTermsMap = termsAgreementDtos.stream()
+                .collect(toMap(TermsAgreementDto::getTermsId, x -> x));
 
         return terms.stream()
                 .map(x -> {
@@ -80,13 +80,13 @@ public class UserSignUpService {
                         throw new IllegalArgumentException("회원 가입 약정이 누락되었습니다.");
                     }
 
-                    TermsDTO termsDTO = userTermsMap.get(x.getId());
-                    if (x.getRequired() && !termsDTO.getAgreement()) {
+                    TermsAgreementDto termsAgreementDTO = userTermsMap.get(x.getId());
+                    if (x.getRequired() && !termsAgreementDTO.getAgreement()) {
                         throw new IllegalArgumentException("필수 약정이 동의되지 않았습니다.");
                     }
 
                     UserTerms userTerms = new UserTerms(users);
-                    userTerms.agreeTerms(x, termsDTO.getAgreement());
+                    userTerms.agreeTerms(x, termsAgreementDTO.getAgreement());
                     return userTerms;
                 }).collect(toList());
     }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TermsDTO {
+public class TermsAgreementDto {
     private Long termsId;
     private Boolean agreement;
 
@@ -21,8 +21,8 @@ public class TermsDTO {
             return false;
         }
 
-        if (obj instanceof TermsDTO) {
-            TermsDTO target = (TermsDTO) obj;
+        if (obj instanceof TermsAgreementDto) {
+            TermsAgreementDto target = (TermsAgreementDto) obj;
 
             return termsId.equals(target.termsId);
         }
