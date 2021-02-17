@@ -19,6 +19,7 @@ public class UsersSignUpController {
     private final UserSignUpService userSignUpService;
     private final AuthenticationCodeSendService authenticationCodeSendService;
 
+    @ResponseBody
     @PostMapping("/auth-code/sending/{phone}")
     public ResponseEntity<Void> sendAuthCode(
             @PathVariable @Pattern(regexp = "010[0-9]{7,8}") String phone
@@ -28,6 +29,7 @@ public class UsersSignUpController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @ResponseBody
     @PostMapping("/auth-code/{phone}/{code}")
     public ResponseEntity<Void> authenticateAuthCode(
             @PathVariable @Pattern(regexp = "010[0-9]{7,8}") String phone,
@@ -37,6 +39,7 @@ public class UsersSignUpController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @ResponseBody
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody @Valid UserDto userDTO) {
 
