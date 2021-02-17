@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Id;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.concurrent.ThreadLocalRandom;
@@ -14,7 +13,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthenticationCode {
 
-    @Id
     private String phoneNumber;
     private String code;
     private LocalDateTime createdDate = LocalDateTime.now();

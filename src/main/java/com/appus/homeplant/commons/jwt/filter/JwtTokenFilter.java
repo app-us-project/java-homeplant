@@ -1,4 +1,4 @@
-package com.appus.homeplant.commons.jwt.filter;
+package com.appus.homeplant.security;
 
 import com.appus.homeplant.commons.jwt.JwtToken;
 import com.appus.homeplant.commons.jwt.JwtTokenProvider;
@@ -19,20 +19,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
 
+    //@Autowired
+    //private JwtTokenService jwtTokenService;
+
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
         try {
             String rawJwtToken = getJwtFromRequest(request);
             JwtToken jwtToken = resolveToken(rawJwtToken);
@@ -40,7 +41,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (!Objects.isNull(jwtToken)) {
                 List<GrantedAuthority> authorities = jwtToken.getAuthorities().stream()
                         .map(SimpleGrantedAuthority::new)
-                        .collect(toList());
+                        .collect(Collectors.toList());
 
                 SecurityContextHolder.getContext()
                         .setAuthentication(
@@ -51,11 +52,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                 )
                         );
             }
-
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
         }
-
         filterChain.doFilter(request, response);
     }
 
@@ -71,7 +70,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(rawJwtToken)) {
             return tokenProvider.resolveToken(rawJwtToken);
         }
-
         return null;
     }
 }

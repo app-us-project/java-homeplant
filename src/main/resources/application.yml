@@ -46,11 +46,6 @@ spring:
         format_sql: true
         use_sql_comments: true
 
-aws:
-  sns:
-    access_key: AKIA5OKCUASBU4JCPYXC
-    secret_key: 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
-
 logging:
   level:
     org:
@@ -58,6 +53,11 @@ logging:
         type:
           descriptor:
             sql: trace
+
+aws:
+  sns:
+    access_key: AKIA5OKCUASBU4JCPYXC
+    secret_key: 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
 
 app:
   jwt-secret: homeplant!
@@ -72,15 +72,21 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: app-us-rds.conomzfuhb5p.ap-northeast-2.rds.amazonaws.com
-    username: root
-    password: appus1234
+    url: jdbc:mysql://app-us-rds.conomzfuhb5p.ap-northeast-2.rds.amazonaws.com:3306/appus
+    username: homeplant
+    password: appus
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
     hibernate:
       ddl-auto: validate
+
+
+aws:
+  sns:
+    access_key: AKIA5OKCUASBU4JCPYXC
+    secret_key: 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
 
 app:
   jwt-secret: homeplant!
