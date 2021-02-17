@@ -12,7 +12,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/terms")
+@RequestMapping("/users/terms")
 public class TermsController {
 
     private final TermsService termsService;
