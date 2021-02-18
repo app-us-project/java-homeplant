@@ -46,19 +46,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(homeplantAuthenticationProvider());
-    }
-
     @Bean
-    public AuthenticationProvider homeplantAuthenticationProvider() {
-        return new HomePlantAuthenticationProvider(userDetailsService, passwordEncoder());
-    }
-
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
-        return new ProviderManager(Collections.singletonList(homeplantAuthenticationProvider()));
+        return new ProviderManager(authenticationProvider());
+    }
+
+    /* 또는 이 방법으로 AuthenticationManager 빈을 생성해도 된다.
+    @Bean
+    @Override
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return new ProviderManager(authenticationProvider());
+    }
+    */
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        return new HomePlantAuthenticationProvider(userDetailsService, passwordEncoder());
     }
 
     //암호화에 필요한 PasswordEncoder를 Bean으로 등록합니다.
