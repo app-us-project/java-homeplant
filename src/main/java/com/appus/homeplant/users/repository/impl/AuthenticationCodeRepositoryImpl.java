@@ -9,8 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class AuthenticationCodeRepositoryImpl
-        implements AuthenticationCodeRepository {
+class AuthenticationCodeRepositoryImpl implements AuthenticationCodeRepository {
 
     private final Map<String, AuthenticationCode> verificationCodeStorage;
     private final static int MAX_SIZE = 1000;
