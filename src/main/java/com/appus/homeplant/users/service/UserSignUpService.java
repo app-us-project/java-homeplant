@@ -12,11 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -30,12 +30,27 @@ public class UserSignUpService {
     private final UserTermsRepository userTermsRepository;
     private final AuthoritiesRepository authoritiesRepository;
 
-    private final AuthenticationCodeSendService authenticationCodeSendService;
+    private final AuthenticationCodeService authenticationCodeService;
     private final PasswordEncoder passwordEncoder;
+
+    public void authenticateCode(String phone, String code) {
+        authenticationCodeService.authenticateCode(phone, code);
+    }
+
+    @Transactional(readOnly = true)
+    public void sendAuthenticationNumber(String phone) {
+        if (usersRepository.existsByPhoneNumber(phone)) {
+            throw new IllegalArgumentException("이미 가입된 휴대폰 번호입니다.");
+        }
+        authenticationCodeService.sendAuthenticationNumber(phone);
+    }
 
     @Transactional
     public void signUpUsers(UserDto userDTO) {
-        authenticationCodeSendService.authenticationCheck(userDTO.getPhoneNumber());
+        if (usersRepository.existsByPhoneNumber(userDTO.getPhoneNumber())) {
+            throw new IllegalArgumentException("이미 가입된 휴대폰 번호입니다.");
+        }
+        authenticationCodeService.authenticationCheck(userDTO.getPhoneNumber());
 
         if (!userDTO.isEqualsTwoPassword()) {
             throw new IllegalArgumentException("입력된 패스워드가 일치하지 않습니다.");
@@ -46,6 +61,7 @@ public class UserSignUpService {
 
         usersRepository.save(createdUsers);
         userTermsRepository.saveAll(contractUserTerms);
+        authenticationCodeService.deleteAuthenticationCode(userDTO.getPhoneNumber());
     }
 
     private Users createUsers(UserDto userDTO) {
@@ -54,7 +70,7 @@ public class UserSignUpService {
                 .password(passwordEncoder.encode(userDTO.getPasswordCheck()))
                 .phoneNumber(userDTO.getPhoneNumber())
                 .userStatus(Users.UserStatus.ENABLED)
-                .authorities(emptyList())
+                .authorities(new ArrayList<>())
                 .build();
 
         List<Authorities> defaultAuthorities = authoritiesRepository

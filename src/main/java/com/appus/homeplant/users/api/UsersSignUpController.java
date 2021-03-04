@@ -1,6 +1,5 @@
 package com.appus.homeplant.users.api;
 
-import com.appus.homeplant.users.service.AuthenticationCodeSendService;
 import com.appus.homeplant.users.service.UserSignUpService;
 import com.appus.homeplant.users.service.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +16,13 @@ import javax.validation.constraints.Pattern;
 public class UsersSignUpController {
 
     private final UserSignUpService userSignUpService;
-    private final AuthenticationCodeSendService authenticationCodeSendService;
 
     @ResponseBody
     @PostMapping("/auth-code/sending/{phone}")
     public ResponseEntity<Void> sendAuthCode(
             @PathVariable @Pattern(regexp = "010[0-9]{7,8}") String phone
     ) {
-        authenticationCodeSendService.sendVerificationNumber(phone);
+        userSignUpService.sendAuthenticationNumber(phone);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -35,7 +33,7 @@ public class UsersSignUpController {
             @PathVariable @Pattern(regexp = "010[0-9]{7,8}") String phone,
             @PathVariable @Pattern(regexp = "[0-9]{6}") String code
     ) {
-        authenticationCodeSendService.authenticateCode(phone, code);
+        userSignUpService.authenticateCode(phone, code);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -92,6 +92,14 @@ public class Users extends BaseEntity implements UserDetails {
         }
     }
 
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isSamePhoneNumber(String phoneNumber) {
+        return this.phoneNumber.equals(phoneNumber);
+    }
+
     public enum UserStatus {
         ENABLED, EXPIRED, LOCKED, WITHDRAWN
     }
