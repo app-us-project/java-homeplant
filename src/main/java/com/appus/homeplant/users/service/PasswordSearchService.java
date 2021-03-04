@@ -4,6 +4,7 @@ import com.appus.homeplant.users.core.Users;
 import com.appus.homeplant.users.repository.UsersRepository;
 import com.appus.homeplant.users.service.dto.ChangePasswordDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ public class PasswordSearchService {
 
     private final UsersRepository usersRepository;
     private final AuthenticationCodeService authenticationCodeService;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public void sendAuthenticationNumber(String email, String phone) {
@@ -40,7 +42,7 @@ public class PasswordSearchService {
         Users users = usersRepository.findByEmail(changePasswordDto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("사용자 이메일이 존재하지 않습니다."));
 
-        users.changePassword(changePasswordDto.getPassword());
+        users.changePassword(passwordEncoder.encode(changePasswordDto.getPassword()));
         authenticationCodeService.deleteAuthenticationCode(changePasswordDto.getPhoneNumber());
     }
 }
