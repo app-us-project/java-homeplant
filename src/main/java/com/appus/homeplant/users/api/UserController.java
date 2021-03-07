@@ -27,6 +27,7 @@ public class UserController {
 
     private final AuthenticationManager authenticationManager;
 
+    //test
     //로그인 요청
     @PostMapping("/login")
     public String login(@RequestBody Map<String, String> user) {
