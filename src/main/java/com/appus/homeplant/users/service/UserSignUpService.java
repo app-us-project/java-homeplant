@@ -17,10 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-<<<<<<< HEAD
-=======
-import static java.util.Collections.emptyList;
->>>>>>> f3ebc3e (test)
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -65,10 +61,7 @@ public class UserSignUpService {
 
         usersRepository.save(createdUsers);
         userTermsRepository.saveAll(contractUserTerms);
-<<<<<<< HEAD
         authenticationCodeService.deleteAuthenticationCode(userDTO.getPhoneNumber());
-=======
->>>>>>> f3ebc3e (test)
     }
 
     private Users createUsers(UserDto userDTO) {
@@ -77,11 +70,7 @@ public class UserSignUpService {
                 .password(passwordEncoder.encode(userDTO.getPasswordCheck()))
                 .phoneNumber(userDTO.getPhoneNumber())
                 .userStatus(Users.UserStatus.ENABLED)
-<<<<<<< HEAD
                 .authorities(new ArrayList<>())
-=======
-                .authorities(emptyList())
->>>>>>> f3ebc3e (test)
                 .build();
 
         List<Authorities> defaultAuthorities = authoritiesRepository
