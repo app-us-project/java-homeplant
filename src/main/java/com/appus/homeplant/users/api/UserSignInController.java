@@ -1,6 +1,7 @@
 package com.appus.homeplant.users.api;
 
 import com.appus.homeplant.commons.jwt.JwtTokenProvider;
+import com.appus.homeplant.users.api.dto.SignInRequest;
 import com.appus.homeplant.users.core.Users;
 import com.appus.homeplant.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -25,11 +26,11 @@ public class UserSignInController {
 
     //로그인 요청
     @PostMapping("/login")
-    public String login(@RequestBody Map<String, String> user) {
-        Users member = usersRepository.findByEmail(user.get("email"))
+    public String login(@RequestBody @Valid SignInRequest request) {
+        Users member = usersRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 EMAIL 입니다."));
 
-        if (!passwordEncoder.matches(user.get("password"), member.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
