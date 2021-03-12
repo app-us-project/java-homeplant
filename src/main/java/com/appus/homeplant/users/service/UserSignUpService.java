@@ -50,7 +50,10 @@ public class UserSignUpService {
         if (usersRepository.existsByPhoneNumber(userDTO.getPhoneNumber())) {
             throw new IllegalArgumentException("이미 가입된 휴대폰 번호입니다.");
         }
-        authenticationCodeService.authenticationCheck(userDTO.getPhoneNumber());
+        /**
+         * AWS SMS 한도로 인하여 체크하지 않음
+         */
+        //authenticationCodeService.authenticationCheck(userDTO.getPhoneNumber());
 
         if (!userDTO.isEqualsTwoPassword()) {
             throw new IllegalArgumentException("입력된 패스워드가 일치하지 않습니다.");
