@@ -38,7 +38,8 @@ public class PasswordSearchService {
             throw new IllegalArgumentException("입력된 두 패스워드가 일치하지 않습니다.");
         }
 
-        authenticationCodeService.authenticationCheck(changePasswordDto.getPhoneNumber());
+        // 휴대폰 인증 여부 임시 주석
+        //authenticationCodeService.authenticationCheck(changePasswordDto.getPhoneNumber());
         Users users = usersRepository.findByEmail(changePasswordDto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("사용자 이메일이 존재하지 않습니다."));
 
