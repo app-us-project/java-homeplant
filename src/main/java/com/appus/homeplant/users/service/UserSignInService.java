@@ -32,6 +32,6 @@ public class UserSignInService {
         List<String> roles = member.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        return jwtTokenProvider.generateToken(member.getUsername(), roles);
+        return jwtTokenProvider.generateToken(member.getId().toString(), roles);
     }
 }
