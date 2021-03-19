@@ -104,4 +104,8 @@ public class Users extends BaseEntity implements UserDetails {
     public enum UserStatus {
         ENABLED, EXPIRED, LOCKED, WITHDRAWN
     }
+
+    public void updateMypage(UserDto userDto) {
+        this.password=userDto.getPassword();
+    }
 }
