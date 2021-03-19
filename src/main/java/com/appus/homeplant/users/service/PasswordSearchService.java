@@ -44,6 +44,6 @@ public class PasswordSearchService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자 이메일이 존재하지 않습니다."));
 
         users.changePassword(passwordEncoder.encode(changePasswordDto.getPassword()));
-        authenticationCodeService.deleteAuthenticationCode(changePasswordDto.getPhoneNumber());
+        //authenticationCodeService.deleteAuthenticationCode(changePasswordDto.getPhoneNumber());
     }
 }

@@ -1,6 +1,7 @@
 package com.appus.homeplant.users.core;
 
 import com.appus.homeplant.commons.audit.BaseEntity;
+import com.appus.homeplant.users.service.dto.UserDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
