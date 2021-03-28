@@ -1,5 +1,6 @@
 package com.appus.homeplant.users.service;
 
+import com.appus.homeplant.users.api.dto.EmailAndPhoneDto;
 import com.appus.homeplant.users.core.Users;
 import com.appus.homeplant.users.repository.UserRepository;
 import com.appus.homeplant.users.service.dto.ChangePasswordDto;
@@ -9,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +20,16 @@ public class MypageService {
     private final PasswordEncoder passwordEncoder;
     private final UserSignInService userSignInService;
 
+    @Transactional(readOnly = true)
+    public EmailAndPhoneDto getUser(Long userId) {
+        Users users = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저 정보가 존재하지 않습니다."));
+
+        return EmailAndPhoneDto.builder()
+                .email(users.getEmail())
+                .phone(users.getPhoneNumber())
+                .build();
+    }
 
     @Transactional
     public Long updateMypage(UserDto userDto, Long id) {
